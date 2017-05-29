@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+<meta charset="utf-8">
+<title>Example 3: notifications</title>
+<link rel="stylesheet" href="./common.css" type="text/css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.3/require.min.js"></script>
+</head>
+<body>
+
+  <div class="box">
+    <button>start experiment</button>
+    <progress style="display:none" max="100"></progress>
+  </div>
+
+  <script>
+    require(['../dist/jsgatt.js'], function(Device) {
+      var awos = new Device.default(window);
+      var battery = awos.register(
+        'battery_service',
+        'battery_level'
+      );    
+      
+      var button = document.querySelector('button');
+      var progress = document.querySelector('progress');
+  
+      button.addEventListener('click', function() {
+        battery.getCharacteristic().then(function(ch) {
+          ch.startNotifications().then(function(){
+            ch.addEventListener('characteristicvaluechanged', printValue);
+            button.style.display = 'none';
+            progress.removeAttribute('style');
+          });
+        });
+      });
+      
+      function printValue(event) {
+        progress.setAttribute('value', event.target.value.getUint8(0));
+      }
+    });
+  </script>
+</body>
+</html>

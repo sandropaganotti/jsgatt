@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+<meta charset="utf-8">
+<title>Example 1: a light</title>
+<link rel="stylesheet" href="./common.css" type="text/css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.3/require.min.js"></script>
+</head>
+<body>
+
+  <div class="box">
+    <button id="toggler">Activate</button>
+    <input id="picker" type="color" style="display: none;">
+  </div>
+  
+  <script>
+    require(['../dist/jsgatt.js'], function(Device) {
+      var SET_LIGHT_SERVICE = '33160fb9-5b27-4e70-b0f8-ff411e3ae078';
+      var SET_LIGHT_CHARACTERISTIC = '217887f8-0af2-4002-9c05-24c9ecf71600';
+      var SET_LIGHT_COLOR_SERVICE = 'b882e31b-5096-43d1-90a9-edbf95073337';
+      var SET_LIGHT_COLOR_CHARACTERISTIC = '74532143-fff1-460d-8e8a-370f934d40be';
+  
+      var awos = new Device.default(window);
+      var toggle = awos.register(
+        SET_LIGHT_SERVICE,
+        SET_LIGHT_CHARACTERISTIC
+      ); 
+      var color = awos.register(
+        SET_LIGHT_COLOR_SERVICE,
+        SET_LIGHT_COLOR_CHARACTERISTIC
+      );
+      var toggler = document.getElementById('toggler');
+      var picker = document.getElementById('picker');
+      
+      toggler.addEventListener(
+        'click', 
+        function() {
+          var ison = !!toggler.getAttribute('data-ison');
+          toggler.textContent = 'Loading';
+          toggle(
+            new Uint8Array([ison ? 0 : 1])
+          ).then(function() {
+            picker.removeAttribute('style');
+            toggler.setAttribute('data-ison', ison ? '' : '1');
+            toggler.textContent = ison ? 'Turn On' : 'Turn Off';
+          });
+        }
+      );
+      
+      picker.addEventListener(
+        'change',
+        function(event) {
+          var colors = event.target.value.match(
+            /#([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})/
+          );
+          color(
+            new Uint8Array([
+  				    parseInt(colors[1], 16),
+  				    parseInt(colors[2], 16),
+  				    parseInt(colors[3], 16)
+  			    ])
+          );        
+        }
+      );
+    });  
+  </script>
+</body>
+</html>

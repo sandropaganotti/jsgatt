@@ -1,0 +1,23 @@
+{
+  "name": "jsgatt",
+  "version": "1.0.0",
+  "description": "wrapper around the browser web bluetooth api.",
+  "main": "dist/index.js",
+  "directories": {
+    "example": "examples"
+  },
+  "scripts": {
+    "test": "jest src",
+    "build": "babel ./src --out-dir ./dist --ignore *.test.js",
+    "prepublish": "npm run build"
+  },
+  "author": "Sandro Paganotti",
+  "license": "MIT",
+  "devDependencies": {
+    "babel-cli": "^6.24.1",
+    "jest": "^20.0.4",
+    "babel-jest": "^20.0.3",
+    "babel-preset-es2015": "^6.24.1",
+    "regenerator-runtime": "^0.10.5"
+  }
+}

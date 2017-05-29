@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+<meta charset="utf-8">
+<title>Example 5: a drone</title>
+<link rel="stylesheet" href="common.css" type="text/css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.3/require.min.js"></script>
+<script src="https://unpkg.com/keymaster@1.6.2/keymaster.js"></script>
+</head>
+<body>
+
+  <div class="box">
+    <button id="start">start experiment</button>
+    <button id="takeoff" style="display:none;">take off</button>
+    <button id="land" style="display:none;">land</button>
+  </div>
+  
+  <script>
+    require(['../dist/jsgatt.js'], function(Device) {
+      var DRONE_NAME = 'Mars_';
+      var HANDSHAKE_SERVICE = '9a66fa00-0800-9191-11e4-012d1540cb8e';
+      var HANDSHARE_CHARACTERISTIC = '9a66fa0b-0800-9191-11e4-012d1540cb8e';
+      var MOVE_CHARACTERISTIC = '9a66fa0a-0800-9191-11e4-012d1540cb8e';
+  
+      var drone = new Device.default(window);
+      var handshake = drone.register(
+        HANDSHAKE_SERVICE,
+        HANDSHARE_CHARACTERISTIC,
+        DRONE_NAME
+      );
+      var move = drone.register(
+        HANDSHAKE_SERVICE,
+        MOVE_CHARACTERISTIC,
+        DRONE_NAME
+      );
+      
+      var start = document.querySelector('#start');
+      var takeoff = document.querySelector('#takeoff');
+      var land = document.querySelector('#land');
+      var isLanding = false;
+      
+      handshake.index = 1;
+      move.index = 1;
+  
+      function HANDSHAKE_SEQUENCE() { 
+        return [
+          4, ++handshake.index, 0, 4, 1, 0, 0x32, 0x30, 0x31, 0x34, 
+          0x2D, 0x31, 0x30, 0x2D, 0x32, 0x38, 0x00
+        ];
+      }
+      
+      function FLAT_TRIM_SEQUENCE() {
+        return [2, ++handshake.index & 0xFF, 2, 0, 0, 0];
+      }
+      
+      function TAKE_OFF_SEQUENCE() {
+        return [4, ++handshake.index, 2, 0, 1, 0];
+      }
+      
+      function LAND_SEQUENCE() {
+        return [4, ++handshake.index, 2, 0, 3, 0];
+      }
+      
+      function MOVE_SEQUENCE(roll, pitch, yaw, altitude) {
+        return  [
+          2, ++move.index, 2, 0, 2, 0, roll || pitch || yaw || altitude ? 1 : 0,
+          roll, pitch, yaw, altitude, 0, 0, 0, 0, 0, 0, 0, 0
+        ];
+      }
+      
+      function directions() {
+        move(new Uint8Array(MOVE_SEQUENCE(
+          0,
+          key.isPressed('W') ? 20 : (key.isPressed('S') ? -20 : 0),
+          key.isPressed('D') ? 20 : (key.isPressed('A') ? -20 : 0),
+          0
+        ))).then(function() {
+          if(!isLanding) {
+            setTimeout(directions, 50);
+          }
+        });
+      }
+      
+      start.addEventListener('click', function() {
+        handshake(new Uint8Array(HANDSHAKE_SEQUENCE()), 300)
+          .then(function() {
+            land.removeAttribute('style');
+            takeoff.removeAttribute('style');
+            start.setAttribute('style', 'display:none;');
+          });
+      });
+      
+      takeoff.addEventListener('click', function() {
+        handshake(new Uint8Array(FLAT_TRIM_SEQUENCE()))
+          .then(function() {
+            return handshake(new Uint8Array(TAKE_OFF_SEQUENCE()));
+          })
+          .then(function() {
+            setTimeout(directions, 50);
+          });        
+      });
+      
+      land.addEventListener('click', function() {
+        isLanding = true;
+        handshake(new Uint8Array(LAND_SEQUENCE()));
+      });
+    });  
+  </script>
+</body>
+</html>

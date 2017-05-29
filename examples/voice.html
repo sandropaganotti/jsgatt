@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+<meta charset="utf-8">
+<title>Example 2: voice activation</title>
+<link rel="stylesheet" href="./common.css" type="text/css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.3/require.min.js"></script>
+</head>
+<body>
+
+  <div class="box">
+    <button>start experiment</button>
+  </div>
+  
+  <script>
+    require(['../dist/jsgatt.js'], function(Device) {
+      var SET_LIGHT_SERVICE = '33160fb9-5b27-4e70-b0f8-ff411e3ae078';
+      var SET_LIGHT_CHARACTERISTIC = '217887f8-0af2-4002-9c05-24c9ecf71600';
+  
+      var awos = new Device.default(window);
+      var toggle = awos.register(
+        SET_LIGHT_SERVICE,
+        SET_LIGHT_CHARACTERISTIC
+      );    
+      
+      var button = document.querySelector('button');
+      var recognition = new window.webkitSpeechRecognition();
+      recognition.continuous = true;
+  
+      button.addEventListener('click', function() {
+        toggle(new Uint8Array([1])).then(function() {
+          recognition.start();
+        });  
+      });
+      
+      recognition.addEventListener('result', function(event) {
+        var result = event.results[event.resultIndex][0].transcript;
+        if (/off/.test(result)) {
+          toggle(new Uint8Array([0]));
+        } else if (/on/.test(result)) {
+          toggle(new Uint8Array([1]));
+        }
+      });
+    });
+  </script>
+</body>
+</html>

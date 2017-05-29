@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+<meta charset="utf-8">
+<title>Example 2: color detector</title>
+<link rel="stylesheet" href="common.css" type="text/css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.3/require.min.js"></script>
+<script>var process = false;</script>
+<script src="https://unpkg.com/color-thief@2.2.2"></script>
+</head>
+<body>
+
+  <div class="box">
+    <button>start experiment</button>
+  </div>
+
+  <div style="display:none">
+    <video width="640" height="480" autoplay></video>
+    <canvas width="640" height="480"></canvas>
+  </div>
+  
+  <script>
+    require(['../dist/jsgatt.js'], function(Device) {
+      var SET_LIGHT_SERVICE = '33160fb9-5b27-4e70-b0f8-ff411e3ae078';
+      var SET_LIGHT_CHARACTERISTIC = '217887f8-0af2-4002-9c05-24c9ecf71600';
+      var SET_LIGHT_COLOR_SERVICE = 'b882e31b-5096-43d1-90a9-edbf95073337';
+      var SET_LIGHT_COLOR_CHARACTERISTIC = '74532143-fff1-460d-8e8a-370f934d40be';
+  
+      var awos = new Device.default(window);
+      var toggle = awos.register(
+        SET_LIGHT_SERVICE,
+        SET_LIGHT_CHARACTERISTIC
+      );    
+      var color = awos.register(
+        SET_LIGHT_COLOR_SERVICE,
+        SET_LIGHT_COLOR_CHARACTERISTIC
+      );
+      
+      var colorbox = document.querySelector('.box');
+      var button = document.querySelector('button');
+      var video = document.querySelector('video');
+      var canvas = document.querySelector('canvas');
+      var context = canvas.getContext('2d');
+      
+      button.addEventListener('click', function() {
+        toggle(new Uint8Array([1])).then(function() {
+          button.style.display = 'none';
+          window.navigator
+            .mediaDevices
+            .getUserMedia({audio: false, video: true})
+            .then(function(stream) {
+              video.srcObject = stream;
+              camColorPicker();
+            });        
+        });  
+      });
+      
+      function camColorPicker() {
+        context.drawImage(video, 0, 0);
+        var pixels = context.getImageData(0, 0, 640, 480).data;
+        var rgbpixel =[];
+        for (var i = 0; i < pixels.length/4; i += 4) {
+          rgbpixel.push([pixels[i], pixels[i+1], pixels[i+2]]);
+        }
+        var cmap = MMCQ.quantize(rgbpixel, 2);
+        var dominant = cmap? cmap.palette()[0] : null;
+        
+        if (dominant) {
+          colorbox.style.backgroundColor = "rgb("+ dominant.join(',') +")";
+          color(new Uint8Array([dominant[0],dominant[1],dominant[2]]));
+        }
+        window.requestAnimationFrame(camColorPicker);
+      }
+    });  
+  </script>
+</body>
+</html>
