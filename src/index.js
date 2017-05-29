@@ -1,1 +1,1 @@
-export { default } from './jsgatt';
+export { default } from "./jsgatt";
