@@ -19,7 +19,7 @@
     "babel-jest": "^20.0.3",
     "babel-preset-es2015": "^6.24.1",
     "regenerator-runtime": "^0.10.5"
-  }
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/sandropaganotti/jsgatt.git"
