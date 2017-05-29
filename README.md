@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/sandropaganotti/jsgatt.svg?branch=master)](https://travis-ci.org/sandropaganotti/jsgatt)
+[![styled with prettier](https://img.shields.io/badge/styled_with-prettier-ff69b4.svg)](https://github.com/prettier/prettier)
 
 # JSGatt
 JSGatt adds some syntactic sugar on top of the [web bluetooth api](https://webbluetoothcg.github.io/web-bluetooth/).
