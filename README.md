@@ -13,7 +13,7 @@ const battery = phone.register(
   'battery_level' // characteristic name or UID
 );
 
-document.querySelector('button').addEventListener(function(){
+document.querySelector('button').addEventListener('click', function(){
   battery().then(value => {
     if (value.getUint8(0) < 20) {
       alert('low battery!');
