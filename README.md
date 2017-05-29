@@ -34,6 +34,8 @@ document.querySelector('button').addEventListener(function(){
 - use `accessor.getCharacteristic()` to get access to the characteristic object, useful if you need to [subscribe to updates from the characteristic](https://googlechrome.github.io/samples/web-bluetooth/notifications.html)
 
 # Examples
+Check your [browser support for web bluetooth](http://caniuse.com/#feat=web-bluetooth) before running.
+
 - **Toggle and change color of a smart light** - [demo](https://sandropaganotti.github.io/jsgatt/examples/light.html), [video](https://www.youtube.com/watch?v=10GUcvLJSzc), [source](https://github.com/sandropaganotti/jsgatt/blob/master/examples/light.html)<br/>
 to run this example you'll need an [Awox smartlight](https://www.amazon.com/AwoX-SML-c4-GU10-SmartLight-Lampadina-controllo/dp/B00UHE2R14/).
 - **Use the webcam to set the color from a smart light** - [demo](https://sandropaganotti.github.io/jsgatt/examples/color-detector.html), [video](https://www.youtube.com/watch?v=IzPUTmDcc8c), [source](https://github.com/sandropaganotti/jsgatt/blob/master/examples/color-detector.html)<br/>
@@ -44,3 +46,6 @@ to run this example you'll need an [Awox smartlight](https://www.amazon.com/AwoX
 you can emulate a battery level service using any Android device with the [BLE peripheal simulator app](https://play.google.com/store/apps/details?id=io.github.webbluetoothcg.bletestperipheral)
 - **Drive a Parrot mini drone with the keyboard** - [demo](https://sandropaganotti.github.io/jsgatt/examples/drone.html), [source](https://github.com/sandropaganotti/jsgatt/blob/master/examples/drone.html)<br/>
 to run this example you'll need a [Parrot Minidrone](https://www.amazon.com/dp/B0111O7VIC/ref=twister_B015HBQGA4/). Massive thanks to [poshaughnessy](https://github.com/poshaughnessy/web-bluetooth-parrot-drone) and [voodootikigod](https://github.com/voodootikigod/node-rolling-spider) for the original codebase.
+
+# Slides
+I made a few slides to explain and detail the examples, [you can find them on slides.com](http://slides.com/sandropaganotti/tales-of-bluetooth).
