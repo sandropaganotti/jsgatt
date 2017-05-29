@@ -21,10 +21,15 @@ document.querySelector('button').addEventListener(function(){
 
 # Features
 ✓ shorter syntax
+
 ✓ auto reconnection
+
 ✓ caches characteristics
+
 ✓ aggregates services for the same device
+
 ✓ prevents writing if another writing is in progress
+
 ✓ handles accessing a characteristic while the device is still connecting
 
 # API
