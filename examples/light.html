@@ -23,11 +23,13 @@
       var awos = new Device.default(window);
       var toggle = awos.register(
         SET_LIGHT_SERVICE,
-        SET_LIGHT_CHARACTERISTIC
+        SET_LIGHT_CHARACTERISTIC,
+        'SML-c4-GU10'
       ); 
       var color = awos.register(
         SET_LIGHT_COLOR_SERVICE,
-        SET_LIGHT_COLOR_CHARACTERISTIC
+        SET_LIGHT_COLOR_CHARACTERISTIC,
+        'SML-c4-GU10'
       );
       var toggler = document.getElementById('toggler');
       var picker = document.getElementById('picker');
